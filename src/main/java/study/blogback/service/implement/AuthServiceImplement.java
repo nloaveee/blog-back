@@ -5,8 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import study.blogback.dto.request.auth.SignInRequestDto;
 import study.blogback.dto.request.auth.SignUpRequestDto;
 import study.blogback.dto.response.ResponseDto;
+import study.blogback.dto.response.auth.SignInResponseDto;
 import study.blogback.dto.response.auth.SignUpResponseDto;
 import study.blogback.entity.UserEntity;
 import study.blogback.repository.UserRepository;
@@ -57,5 +59,34 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return SignUpResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+
+        String token = null;
+
+        try {
+
+            String email = dto.getEmail();
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity == null) {
+                return SignInResponseDto.signInFail();
+            }
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if (!isMatched) {
+                return SignInResponseDto.signInFail();
+            }
+
+
+        } catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return SignInResponseDto.success(token);
     }
 }
