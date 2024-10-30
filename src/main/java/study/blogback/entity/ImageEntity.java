@@ -16,7 +16,12 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int imageId;
 
-    private String boardId;
+    private int boardId;
 
     private String image;
+
+    public ImageEntity(int boardId, String image) {
+        this.boardId = boardId;
+        this.image = image;
+    }
 }
