@@ -11,6 +11,7 @@ import study.blogback.dto.response.ResponseDto;
 import study.blogback.dto.response.auth.SignInResponseDto;
 import study.blogback.dto.response.auth.SignUpResponseDto;
 import study.blogback.entity.UserEntity;
+import study.blogback.provider.JWTProvider;
 import study.blogback.repository.UserRepository;
 import study.blogback.service.AuthService;
 
@@ -19,6 +20,7 @@ import study.blogback.service.AuthService;
 public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
+    private final JWTProvider jwtProvider;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -67,7 +69,6 @@ public class AuthServiceImplement implements AuthService {
         String token = null;
 
         try {
-
             String email = dto.getEmail();
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity == null) {
@@ -80,6 +81,8 @@ public class AuthServiceImplement implements AuthService {
             if (!isMatched) {
                 return SignInResponseDto.signInFail();
             }
+
+            token = jwtProvider.create(email);
 
 
         } catch (Exception exception){
