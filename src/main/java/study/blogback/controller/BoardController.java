@@ -4,11 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import study.blogback.dto.request.board.PostBoardRequestDto;
+import study.blogback.dto.response.board.GetBoardResponseDto;
 import study.blogback.dto.response.board.PostBoardResponseDto;
 import study.blogback.service.BoardService;
 
@@ -18,6 +16,12 @@ import study.blogback.service.BoardService;
 public class BoardController {
 
     private final BoardService boardService;
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<? super GetBoardResponseDto> getBoard(@PathVariable Integer boardId) {
+        ResponseEntity<? super GetBoardResponseDto> response = boardService.getBoard(boardId);
+        return response;
+    }
 
     @PostMapping("")
     public ResponseEntity<? super PostBoardResponseDto> postBoard(
