@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.blogback.dto.request.board.PostCommentRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -25,4 +26,11 @@ public class CommentEntity {
     private String userEmail;
 
     private int boardId;
+
+    public CommentEntity(PostCommentRequestDto dto, Integer boardId, String email) {
+        this.content = dto.getContent();
+        this.writeDateTime = LocalDateTime.now();
+        this.userEmail = email;
+        this.boardId = boardId;
+    }
 }

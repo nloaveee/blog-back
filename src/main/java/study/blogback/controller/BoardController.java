@@ -6,10 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import study.blogback.dto.request.board.PostBoardRequestDto;
-import study.blogback.dto.response.board.GetBoardResponseDto;
-import study.blogback.dto.response.board.GetFavoriteListResponseDto;
-import study.blogback.dto.response.board.PostBoardResponseDto;
-import study.blogback.dto.response.board.PutFavoriteResponseDto;
+import study.blogback.dto.request.board.PostCommentRequestDto;
+import study.blogback.dto.response.board.*;
 import study.blogback.service.BoardService;
 
 @RestController
@@ -30,6 +28,16 @@ public class BoardController {
             @RequestBody @Valid PostBoardRequestDto requestBody,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super PostBoardResponseDto> response = boardService.postBoard(requestBody, email);
+        return response;
+    }
+
+    @PostMapping("/{boardId}/comment")
+    public ResponseEntity<? super PostCommentResponseDto> postComment(
+            @RequestBody @Valid PostCommentRequestDto requestBody,
+            @PathVariable("boardId") Integer boardId,
+            @AuthenticationPrincipal String email
+    ) {
+        ResponseEntity<? super PostCommentResponseDto> response = boardService.postComment(requestBody, boardId, email);
         return response;
     }
 

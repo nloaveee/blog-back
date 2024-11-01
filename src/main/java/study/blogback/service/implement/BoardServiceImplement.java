@@ -2,21 +2,16 @@ package study.blogback.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import study.blogback.dto.request.board.PostBoardRequestDto;
+import study.blogback.dto.request.board.PostCommentRequestDto;
 import study.blogback.dto.response.ResponseDto;
-import study.blogback.dto.response.board.GetBoardResponseDto;
-import study.blogback.dto.response.board.GetFavoriteListResponseDto;
-import study.blogback.dto.response.board.PostBoardResponseDto;
-import study.blogback.dto.response.board.PutFavoriteResponseDto;
+import study.blogback.dto.response.board.*;
 import study.blogback.entity.BoardEntity;
+import study.blogback.entity.CommentEntity;
 import study.blogback.entity.FavoriteEntity;
 import study.blogback.entity.ImageEntity;
-import study.blogback.repository.BoardRepository;
-import study.blogback.repository.FavoriteRepository;
-import study.blogback.repository.ImageRepository;
-import study.blogback.repository.UserRepository;
+import study.blogback.repository.*;
 import study.blogback.repository.resultSet.GetBoardResultSet;
 import study.blogback.repository.resultSet.GetFavoriteListResultSet;
 import study.blogback.service.BoardService;
@@ -33,6 +28,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
+    private final CommentRepositiory commentRepositiory;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardId) {
@@ -111,6 +107,34 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardId, String email) {
+        try {
+
+            BoardEntity boardEntity = boardRepository.findByBoardId(boardId);
+            if (boardEntity == null) {
+                return PostCommentResponseDto.noExistBoard();
+            }
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) {
+                return PostCommentResponseDto.noExistUser();
+            }
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardId, email);
+            commentRepositiory.save(commentEntity);
+
+            boardEntity.increaseCommentCount();
+            boardRepository.save(boardEntity);
+
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PostCommentResponseDto.success();
     }
 
     @Override
