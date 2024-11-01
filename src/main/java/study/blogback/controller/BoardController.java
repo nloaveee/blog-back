@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.response.board.GetBoardResponseDto;
+import study.blogback.dto.response.board.GetFavoriteListResponseDto;
 import study.blogback.dto.response.board.PostBoardResponseDto;
 import study.blogback.dto.response.board.PutFavoriteResponseDto;
 import study.blogback.service.BoardService;
@@ -29,6 +30,13 @@ public class BoardController {
             @RequestBody @Valid PostBoardRequestDto requestBody,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super PostBoardResponseDto> response = boardService.postBoard(requestBody, email);
+        return response;
+    }
+
+    @GetMapping("/{boardId}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
+            @PathVariable("boardId") Integer boardId) {
+        ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardId);
         return response;
     }
 

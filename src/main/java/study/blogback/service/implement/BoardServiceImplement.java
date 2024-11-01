@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.response.ResponseDto;
 import study.blogback.dto.response.board.GetBoardResponseDto;
+import study.blogback.dto.response.board.GetFavoriteListResponseDto;
 import study.blogback.dto.response.board.PostBoardResponseDto;
 import study.blogback.dto.response.board.PutFavoriteResponseDto;
 import study.blogback.entity.BoardEntity;
@@ -17,6 +18,7 @@ import study.blogback.repository.FavoriteRepository;
 import study.blogback.repository.ImageRepository;
 import study.blogback.repository.UserRepository;
 import study.blogback.repository.resultSet.GetBoardResultSet;
+import study.blogback.repository.resultSet.GetFavoriteListResultSet;
 import study.blogback.service.BoardService;
 
 import java.util.ArrayList;
@@ -56,6 +58,27 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetBoardResponseDto.success(resultSet,imageEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardId) {
+
+        List<GetFavoriteListResultSet> resultSets = new ArrayList<>();
+
+        try {
+            boolean existedBoard = boardRepository.existsByBoardId(boardId);
+            if (!existedBoard) {
+                return GetFavoriteListResponseDto.noExistBoard();
+            }
+
+            resultSets = favoriteRepository.getFavoriteList(boardId);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetFavoriteListResponseDto.success(resultSets);
     }
 
     @Override

@@ -9,6 +9,8 @@ import study.blogback.repository.resultSet.GetBoardResultSet;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity,Integer> {
 
+    boolean existsByBoardId(Integer boardId);
+
     BoardEntity findByBoardId(Integer boardId);
 
     @Query (
