@@ -7,4 +7,6 @@ import study.blogback.entity.primaryKey.FavoritePk;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, FavoritePk> {
+
+    FavoriteEntity findByBoardIdAndUserEmail(Integer boardId, String userEmail);
 }

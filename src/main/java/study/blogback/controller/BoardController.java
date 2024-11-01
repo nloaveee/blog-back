@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.response.board.GetBoardResponseDto;
 import study.blogback.dto.response.board.PostBoardResponseDto;
+import study.blogback.dto.response.board.PutFavoriteResponseDto;
 import study.blogback.service.BoardService;
 
 @RestController
@@ -28,6 +29,15 @@ public class BoardController {
             @RequestBody @Valid PostBoardRequestDto requestBody,
             @AuthenticationPrincipal String email) {
         ResponseEntity<? super PostBoardResponseDto> response = boardService.postBoard(requestBody, email);
+        return response;
+    }
+
+    @PutMapping("/{boardId}/favorite")
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
+        @PathVariable("boardId") Integer boardId,
+        @AuthenticationPrincipal String email
+    ) {
+        ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putFavorite(boardId, email);
         return response;
     }
 }

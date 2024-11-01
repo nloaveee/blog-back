@@ -2,14 +2,18 @@ package study.blogback.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.response.ResponseDto;
 import study.blogback.dto.response.board.GetBoardResponseDto;
 import study.blogback.dto.response.board.PostBoardResponseDto;
+import study.blogback.dto.response.board.PutFavoriteResponseDto;
 import study.blogback.entity.BoardEntity;
+import study.blogback.entity.FavoriteEntity;
 import study.blogback.entity.ImageEntity;
 import study.blogback.repository.BoardRepository;
+import study.blogback.repository.FavoriteRepository;
 import study.blogback.repository.ImageRepository;
 import study.blogback.repository.UserRepository;
 import study.blogback.repository.resultSet.GetBoardResultSet;
@@ -26,6 +30,7 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository  userRepository;
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardId) {
@@ -83,5 +88,39 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PostBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardId, String email) {
+        try {
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) {
+                return PutFavoriteResponseDto.noExistUser();
+            }
+
+            BoardEntity boardEntity = boardRepository.findByBoardId(boardId);
+            if (boardEntity == null) {
+                return PutFavoriteResponseDto.noExistBoard();
+            }
+
+            FavoriteEntity favoriteEntity = favoriteRepository.findByBoardIdAndUserEmail(boardId,email);
+            if (favoriteEntity == null) {
+                favoriteEntity = new FavoriteEntity(email,boardId);
+                favoriteRepository.save(favoriteEntity);
+                boardEntity.increaseFavoriteCount();
+            }
+            else {
+                favoriteRepository.delete(favoriteEntity);
+                boardEntity.decreaseFavoriteCount();
+            }
+
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PutFavoriteResponseDto.success();
     }
 }
