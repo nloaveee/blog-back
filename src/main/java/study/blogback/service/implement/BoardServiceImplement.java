@@ -13,6 +13,7 @@ import study.blogback.entity.FavoriteEntity;
 import study.blogback.entity.ImageEntity;
 import study.blogback.repository.*;
 import study.blogback.repository.resultSet.GetBoardResultSet;
+import study.blogback.repository.resultSet.GetCommentListResultSet;
 import study.blogback.repository.resultSet.GetFavoriteListResultSet;
 import study.blogback.service.BoardService;
 
@@ -28,7 +29,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
-    private final CommentRepositiory commentRepositiory;
+    private final CommentRepositiory commentRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardId) {
@@ -78,6 +79,28 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardId) {
+
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+
+        try {
+
+            boolean existedBoard = boardRepository.existsByBoardId(boardId);
+            if (!existedBoard) {
+                return GetCommentListResponseDto.noExistBoard();
+            }
+
+            resultSets = commentRepository.getCommentList(boardId);
+
+        }catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetCommentListResponseDto.success(resultSets);
+    }
+
+    @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
         try {
 
@@ -123,7 +146,7 @@ public class BoardServiceImplement implements BoardService {
             }
 
             CommentEntity commentEntity = new CommentEntity(dto, boardId, email);
-            commentRepositiory.save(commentEntity);
+            commentRepository.save(commentEntity);
 
             boardEntity.increaseCommentCount();
             boardRepository.save(boardEntity);

@@ -48,6 +48,17 @@ public class BoardController {
         return response;
     }
 
+    /**
+     * 게시물 댓글 리스트
+     */
+    @GetMapping("/{boardId}/comment-list")
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(
+            @PathVariable("boardId") Integer boardId
+    ) {
+        ResponseEntity<? super GetCommentListResponseDto> response = boardService.getCommentList(boardId);
+        return response;
+    }
+
     @PutMapping("/{boardId}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
         @PathVariable("boardId") Integer boardId,
