@@ -45,10 +45,6 @@ public class BoardServiceImplement implements BoardService {
 
             imageEntities = imageRepository.findByBoardId(boardId);
 
-            BoardEntity boardEntity = boardRepository.findByBoardId(boardId);
-            boardEntity.increaseViewCount();
-            boardRepository.save(boardEntity);
-
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
@@ -192,5 +188,24 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PutFavoriteResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardId) {
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardId(boardId);
+            if (boardEntity == null) {
+                return IncreaseViewCountResponseDto.noExistBoard();
+            }
+
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return IncreaseViewCountResponseDto.success();
     }
 }

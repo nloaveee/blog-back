@@ -14,4 +14,6 @@ public interface BoardService {
     ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardId, String email);
 
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardId, String email);
+
+    ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardId);
 }

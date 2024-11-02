@@ -41,6 +41,9 @@ public class BoardController {
         return response;
     }
 
+    /**
+     * 게시물 좋아요 리스트
+     */
     @GetMapping("/{boardId}/favorite-list")
     public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(
             @PathVariable("boardId") Integer boardId) {
@@ -59,6 +62,14 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping ("/{boardId}/increase-view-count")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(
+            @PathVariable("boardId") Integer boardId
+    ) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.increaseViewCount(boardId);
+        return response;
+    }
+
     @PutMapping("/{boardId}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
         @PathVariable("boardId") Integer boardId,
@@ -67,4 +78,6 @@ public class BoardController {
         ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putFavorite(boardId, email);
         return response;
     }
+
+
 }
