@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import study.blogback.repository.resultSet.GetCommentListResultSet;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +21,11 @@ public class CommentListItem {
     private LocalDateTime writeDateTime;
 
     public CommentListItem(GetCommentListResultSet resultSet) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
         this.nickname = resultSet.getNickname();
         this.profileImage = resultSet.getProfileImage();
         this.content = resultSet.getContent();
-        this.writeDateTime = LocalDateTime.parse(resultSet.getWriteDateTime());
+        this.writeDateTime = LocalDateTime.parse(resultSet.getWriteDateTime(), formatter);
     }
 
     public static List<CommentListItem> copyList(List<GetCommentListResultSet> resultSets) {
