@@ -3,6 +3,7 @@ package study.blogback.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import study.blogback.dto.response.board.GetFavoriteListResponseDto;
 import study.blogback.entity.FavoriteEntity;
 import study.blogback.entity.primaryKey.FavoritePk;
@@ -28,5 +29,8 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Favori
         nativeQuery = true
     )
     List<GetFavoriteListResultSet> getFavoriteList(Integer boardId);
+
+    @Transactional
+    void deleteByBoardId(Integer boardId);
 
 }

@@ -16,4 +16,6 @@ public interface BoardService {
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardId, String email);
 
     ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardId);
+
+    ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardId, String email);
 }

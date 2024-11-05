@@ -79,5 +79,13 @@ public class BoardController {
         return response;
     }
 
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(
+            @PathVariable("boardId") Integer boardId,
+            @AuthenticationPrincipal String email
+    ) {
+        ResponseEntity<? super DeleteBoardResponseDto> response = boardService.deleteBoard(boardId, email);
+        return response;
+    }
 
 }
