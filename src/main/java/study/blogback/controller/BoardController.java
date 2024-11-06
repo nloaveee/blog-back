@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import study.blogback.dto.request.board.PatchBoardRequestDto;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.request.board.PostCommentRequestDto;
 import study.blogback.dto.response.board.*;
@@ -77,6 +78,19 @@ public class BoardController {
     ) {
         ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putFavorite(boardId, email);
         return response;
+    }
+
+    /**
+     * 게시물 수정
+     */
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(
+            @RequestBody @Valid PatchBoardRequestDto requestBody,
+            @PathVariable("boardId") Integer boardId,
+            @AuthenticationPrincipal String email
+     ) {
+         ResponseEntity<? super PatchBoardResponseDto> response = boardService.patchBoard(requestBody, boardId, email);
+         return response;
     }
 
     @DeleteMapping("/{boardId}")

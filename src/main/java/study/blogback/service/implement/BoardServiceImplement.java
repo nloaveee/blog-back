@@ -3,6 +3,7 @@ package study.blogback.service.implement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import study.blogback.dto.request.board.PatchBoardRequestDto;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.request.board.PostCommentRequestDto;
 import study.blogback.dto.response.ResponseDto;
@@ -102,7 +103,7 @@ public class BoardServiceImplement implements BoardService {
 
             boolean existedEmail = userRepository.existsByEmail(email);
             if (!existedEmail) {
-                return PostBoardResponseDto.notExistUser();
+                return PostBoardResponseDto.noExistUser();
             }
 
             BoardEntity boardEntity = new BoardEntity(dto, email);
@@ -188,6 +189,45 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return PutFavoriteResponseDto.success();
+    }
+
+    /**
+     * 게시물 수정
+     */
+    @Override
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardId, String email) {
+        try {
+
+            BoardEntity boardEntity = boardRepository.findByBoardId(boardId);
+            if (boardEntity == null) return PatchBoardResponseDto.noExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return PatchBoardResponseDto.noExistUser();
+
+            String writerEmail = boardEntity.getWriterEmail();
+            boolean isWriter = writerEmail.equals(email);
+            if (!isWriter) return PatchBoardResponseDto.noPermission();
+
+            boardEntity.patchBoard(dto);
+            boardRepository.save(boardEntity);
+
+            imageRepository.deleteByBoardId(boardId);
+            List<String> boardImageList = dto.getBoardImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+
+            for (String image : boardImageList) {
+                ImageEntity imageEntity = new ImageEntity(boardId,image);
+                imageEntities.add(imageEntity);
+            }
+
+            imageRepository.saveAll(imageEntities);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PatchBoardResponseDto.success();
     }
 
     @Override

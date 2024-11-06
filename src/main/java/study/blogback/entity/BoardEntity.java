@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.blogback.dto.request.board.PatchBoardRequestDto;
 import study.blogback.dto.request.board.PostBoardRequestDto;
 
 import java.text.SimpleDateFormat;
@@ -57,8 +58,12 @@ public class BoardEntity {
         this.commentCount++;
     }
 
-
     public void decreaseFavoriteCount() {
         this.favoriteCount--;
+    }
+
+    public void patchBoard(PatchBoardRequestDto dto ) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 }
