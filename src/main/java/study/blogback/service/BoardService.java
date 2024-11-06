@@ -10,6 +10,7 @@ public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardId);
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardId);
     ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardId);
+    ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
 
     ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
     ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardId, String email);

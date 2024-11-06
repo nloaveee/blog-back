@@ -8,10 +8,7 @@ import study.blogback.dto.request.board.PostBoardRequestDto;
 import study.blogback.dto.request.board.PostCommentRequestDto;
 import study.blogback.dto.response.ResponseDto;
 import study.blogback.dto.response.board.*;
-import study.blogback.entity.BoardEntity;
-import study.blogback.entity.CommentEntity;
-import study.blogback.entity.FavoriteEntity;
-import study.blogback.entity.ImageEntity;
+import study.blogback.entity.*;
 import study.blogback.repository.*;
 import study.blogback.repository.resultSet.GetBoardResultSet;
 import study.blogback.repository.resultSet.GetCommentListResultSet;
@@ -31,6 +28,7 @@ public class BoardServiceImplement implements BoardService {
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
     private final CommentRepositiory commentRepository;
+    private final BoardListViewRepository boardListViewRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardId) {
@@ -95,6 +93,26 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetCommentListResponseDto.success(resultSets);
+    }
+
+    /**
+     * 최신 게시물 리스트 불러오기
+     */
+    @Override
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+
+            boardListViewEntities = boardListViewRepository.findByOrderByWriteDateTimeDesc();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetLatestBoardListResponseDto.success(boardListViewEntities);
     }
 
     @Override
