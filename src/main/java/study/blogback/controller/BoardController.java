@@ -80,6 +80,15 @@ public class BoardController {
         return response;
     }
 
+    /**
+     * 주간 top3 게시물 불러오기
+     */
+    @GetMapping ("/top-3")
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+        ResponseEntity<? super GetTop3BoardListResponseDto> response = boardService.getTop3BoardList();
+        return response;
+    }
+
     @PutMapping("/{boardId}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
         @PathVariable("boardId") Integer boardId,

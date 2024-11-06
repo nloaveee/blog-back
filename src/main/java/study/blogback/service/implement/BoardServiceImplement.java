@@ -15,7 +15,12 @@ import study.blogback.repository.resultSet.GetCommentListResultSet;
 import study.blogback.repository.resultSet.GetFavoriteListResultSet;
 import study.blogback.service.BoardService;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -113,6 +118,27 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetLatestBoardListResponseDto.success(boardListViewEntities);
+    }
+
+    /**
+     * 주간 top3 게시물 리스트 불러오기
+     */
+    @Override
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+
+            LocalDateTime beforeWeek = LocalDateTime.now().minusDays(7);
+            boardListViewEntities = boardListViewRepository.findTop3ByWriteDateTimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDescWriteDateTimeDesc(beforeWeek);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetTop3BoardListResponseDto.success(boardListViewEntities);
     }
 
     @Override
