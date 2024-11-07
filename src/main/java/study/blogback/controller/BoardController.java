@@ -89,6 +89,18 @@ public class BoardController {
         return response;
     }
 
+    /**
+     * 인기 검색어 불러오기
+     */
+    @GetMapping (value = {"/search-list/{searchWord}","/search-list/{searchWord}/{preSearchWord}"})
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
+            @PathVariable("searchWord") String searchWord,
+            @PathVariable(value = "preSearchWord", required = false) String preSearchWord
+    ) {
+        ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(searchWord, preSearchWord);
+        return response;
+    }
+
     @PutMapping("/{boardId}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
         @PathVariable("boardId") Integer boardId,

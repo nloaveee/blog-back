@@ -15,12 +15,8 @@ import study.blogback.repository.resultSet.GetCommentListResultSet;
 import study.blogback.repository.resultSet.GetFavoriteListResultSet;
 import study.blogback.service.BoardService;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +29,7 @@ public class BoardServiceImplement implements BoardService {
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
     private final CommentRepositiory commentRepository;
+    private final SearchLogRepository searchLogRepository;
     private final BoardListViewRepository boardListViewRepository;
 
     @Override
@@ -139,6 +136,36 @@ public class BoardServiceImplement implements BoardService {
         }
 
         return GetTop3BoardListResponseDto.success(boardListViewEntities);
+    }
+
+    /**
+     * 인기 검색어 리스트 불러오기
+     */
+    @Override
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord) {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+
+            boardListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrderByWriteDateTimeDesc(searchWord, searchWord);
+
+            SearchLogEntity  searchLogEntity = new SearchLogEntity(searchWord, preSearchWord, false);
+            searchLogRepository.save(searchLogEntity);
+
+            boolean relation = preSearchWord != null;
+            if (relation) {
+                searchLogEntity = new SearchLogEntity(preSearchWord, searchWord, relation);
+                searchLogRepository.save(searchLogEntity);
+            }
+
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetSearchBoardListResponseDto.success(boardListViewEntities);
     }
 
     @Override
