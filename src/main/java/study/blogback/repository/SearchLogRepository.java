@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import study.blogback.entity.SearchLogEntity;
 import study.blogback.repository.resultSet.GetPopularListResultSet;
+import study.blogback.repository.resultSet.GetRelationListResultSet;
 
 import java.util.List;
 
@@ -23,5 +24,18 @@ public interface SearchLogRepository extends JpaRepository<SearchLogEntity, Inte
             nativeQuery = true
     )
     List<GetPopularListResultSet> getPopularList();
+
+    @Query (
+            value =
+            "SELECT relationWord as searchWord, count(relationWord) as count " +
+            "from search_log " +
+            "where searchWord = ?1 " +
+            "AND relationWord IS NOT NULL " +
+            "group by relationWord " +
+            "order by count desc " +
+            "limit 15; ",
+            nativeQuery = true
+    )
+    List<GetRelationListResultSet> getRelationList(String searchWord);
 
 }

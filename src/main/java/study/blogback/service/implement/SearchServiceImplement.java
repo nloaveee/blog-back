@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import study.blogback.dto.response.ResponseDto;
 import study.blogback.dto.response.search.GetPopularListResponseDto;
+import study.blogback.dto.response.search.GetRelationListResponseDto;
 import study.blogback.repository.SearchLogRepository;
 import study.blogback.repository.resultSet.GetPopularListResultSet;
+import study.blogback.repository.resultSet.GetRelationListResultSet;
 import study.blogback.service.SearchService;
 
 import java.util.ArrayList;
@@ -34,5 +36,26 @@ public class SearchServiceImplement implements SearchService {
         }
 
         return GetPopularListResponseDto.success(resultSet);
+    }
+
+    /**
+     * 연관 검색어 리스트 불러오기
+     */
+    @Override
+    public ResponseEntity<? super GetRelationListResponseDto> getRelationList(String searchWord) {
+
+        List<GetRelationListResultSet> resultSet = new ArrayList<>();
+
+        try {
+
+            resultSet = searchLogRepository.getRelationList(searchWord);
+
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetRelationListResponseDto.success(resultSet);
     }
 }
