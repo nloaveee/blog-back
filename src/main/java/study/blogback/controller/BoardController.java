@@ -101,6 +101,17 @@ public class BoardController {
         return response;
     }
 
+    /**
+     * 특정 유저 게시물 불러오기
+     */
+    @GetMapping ("/user-board-list/{email}")
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
+            @PathVariable("email") String email
+    ) {
+        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(email);
+        return response;
+    }
+
     @PutMapping("/{boardId}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
         @PathVariable("boardId") Integer boardId,
