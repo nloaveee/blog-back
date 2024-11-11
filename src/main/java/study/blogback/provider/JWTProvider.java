@@ -3,7 +3,6 @@ package study.blogback.provider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 
@@ -22,14 +21,14 @@ public class JWTProvider {
     @Value("${secret-key}")
     private String secretKey;
 
-    public String create(String email) {
+    public String create(String useId) {
 
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String jwt = Jwts.builder()
                 .signWith(key,SignatureAlgorithm.HS256)
-                .setSubject(email)
+                .setSubject(useId)
                 .setIssuedAt(new Date())
                 .setExpiration(expiredDate)
                 .compact();
