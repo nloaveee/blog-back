@@ -7,12 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import study.blogback.dto.request.auth.IdCheckRequestDto;
-import study.blogback.dto.request.auth.SignInRequestDto;
-import study.blogback.dto.request.auth.SignUpRequestDto;
-import study.blogback.dto.response.auth.IdCheckResponseDto;
-import study.blogback.dto.response.auth.SignInResponseDto;
-import study.blogback.dto.response.auth.SignUpResponseDto;
+import study.blogback.dto.request.auth.*;
+import study.blogback.dto.response.auth.*;
 import study.blogback.service.AuthService;
 
 @RestController
@@ -27,6 +23,21 @@ public class AuthController {
         ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(idCheckRequestDto);
         return response;
     }
+
+    @PostMapping("/email-certification")
+    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
+            @RequestBody @Valid EmailCertificationRequestDto requestBody) {
+        ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
+        return response;
+    }
+
+    @PostMapping("/check-certification")
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(
+            @RequestBody @Valid CheckCertificationRequestDto requestBody) {
+        ResponseEntity<? super CheckCertificationResponseDto> response = authService.checkCertification(requestBody);
+        return response;
+    }
+
 
     @PostMapping("/sign-up")
     public ResponseEntity<? super SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {

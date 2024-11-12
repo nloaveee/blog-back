@@ -5,15 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import study.blogback.dto.request.auth.IdCheckRequestDto;
-import study.blogback.dto.request.auth.SignInRequestDto;
-import study.blogback.dto.request.auth.SignUpRequestDto;
+import study.blogback.common.CertificationNumber;
+import study.blogback.dto.request.auth.*;
 import study.blogback.dto.response.ResponseDto;
-import study.blogback.dto.response.auth.IdCheckResponseDto;
-import study.blogback.dto.response.auth.SignInResponseDto;
-import study.blogback.dto.response.auth.SignUpResponseDto;
+import study.blogback.dto.response.auth.*;
+import study.blogback.entity.CertificationEntity;
 import study.blogback.entity.UserEntity;
+import study.blogback.provider.EmailProvider;
 import study.blogback.provider.JWTProvider;
+import study.blogback.repository.CertificationRepository;
 import study.blogback.repository.UserRepository;
 import study.blogback.service.AuthService;
 
@@ -23,6 +23,8 @@ public class AuthServiceImplement implements AuthService {
 
     private final UserRepository userRepository;
     private final JWTProvider jwtProvider;
+    private final EmailProvider emailProvider;
+    private final CertificationRepository certificationRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -45,6 +47,68 @@ public class AuthServiceImplement implements AuthService {
         }
 
         return IdCheckResponseDto.success();
+    }
+
+    /**
+     * 이메일 인증
+     */
+    @Override
+    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
+        try {
+
+            String userId =dto.getId();
+            String email = dto.getEmail();
+
+            boolean isExistId = userRepository.existsById(userId);
+            if (isExistId) {
+                return EmailCertificationResponseDto.duplicateId();
+            }
+
+            String certificationNumber = CertificationNumber.getCertificationNumber();
+
+            boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
+            if (!isSuccessed) {
+                return EmailCertificationResponseDto.mailSendFail();
+            }
+
+            CertificationEntity certificationEntity = new CertificationEntity(userId, email, certificationNumber);
+            certificationRepository.save(certificationEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return EmailCertificationResponseDto.success();
+    }
+
+    /**
+     * 이메일 인증번호 확인
+     */
+    @Override
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+        try {
+
+            String userId = dto.getId();
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();
+
+            CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
+            if (certificationEntity == null) {
+                return CheckCertificationResponseDto.certificationFail();
+            }
+
+            boolean isMatched = certificationEntity.getEmail().equals(email) && certificationEntity.getCertificationNumber().equals(certificationNumber);
+            if (!isMatched) {
+                return CheckCertificationResponseDto.certificationFail();
+            }
+
+        } catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return CheckCertificationResponseDto.success();
     }
 
 
