@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import study.blogback.dto.request.auth.IdCheckRequestDto;
 import study.blogback.dto.request.auth.SignInRequestDto;
 import study.blogback.dto.request.auth.SignUpRequestDto;
 import study.blogback.dto.response.ResponseDto;
+import study.blogback.dto.response.auth.IdCheckResponseDto;
 import study.blogback.dto.response.auth.SignInResponseDto;
 import study.blogback.dto.response.auth.SignUpResponseDto;
 import study.blogback.entity.UserEntity;
@@ -22,12 +24,43 @@ public class AuthServiceImplement implements AuthService {
     private final UserRepository userRepository;
     private final JWTProvider jwtProvider;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    /**
+     * 아이디 중복 체크
+     */
+    @Override
+    public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
+        try {
+
+            String userId =dto.getId();
+            boolean isExistId = userRepository.existsById(userId);
+            if (isExistId) {
+                return IdCheckResponseDto.duplicateId();
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return IdCheckResponseDto.success();
+    }
+
+
+    /**
+     * 회원가입
+     */
     @Override
     public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
         try {
+            String userId = dto.getId();
+            boolean existedById = userRepository.existsByUserId(userId);
+            if (existedById) {
+                return IdCheckResponseDto.duplicateId();
+            }
+
             String email = dto.getEmail();
             boolean existedByEmail = userRepository.existsByEmail(email);
             if (existedByEmail) {
@@ -63,6 +96,7 @@ public class AuthServiceImplement implements AuthService {
         return SignUpResponseDto.success();
     }
 
+
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 
@@ -92,4 +126,6 @@ public class AuthServiceImplement implements AuthService {
 
         return SignInResponseDto.success(token);
     }
+
+
 }

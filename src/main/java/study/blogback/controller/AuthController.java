@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import study.blogback.dto.request.auth.IdCheckRequestDto;
 import study.blogback.dto.request.auth.SignInRequestDto;
 import study.blogback.dto.request.auth.SignUpRequestDto;
+import study.blogback.dto.response.auth.IdCheckResponseDto;
 import study.blogback.dto.response.auth.SignInResponseDto;
 import study.blogback.dto.response.auth.SignUpResponseDto;
 import study.blogback.service.AuthService;
@@ -19,6 +21,12 @@ import study.blogback.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+
+    @PostMapping("/id-check")
+    public ResponseEntity<? super IdCheckResponseDto> idCheck(@RequestBody @Valid IdCheckRequestDto idCheckRequestDto) {
+        ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(idCheckRequestDto);
+        return response;
+    }
 
     @PostMapping("/sign-up")
     public ResponseEntity<? super SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto requestBody) {
