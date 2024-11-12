@@ -27,6 +27,7 @@ import java.io.IOException;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
@@ -58,7 +59,9 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/api/v1/auth/**", "/api/v1/search/**","/file/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/board/**", "/api/v1/user/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/board/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         http
