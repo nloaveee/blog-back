@@ -34,5 +34,10 @@ public class SignUpResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
+    public static ResponseEntity<ResponseDto> certificationFail() {
+        ResponseDto result = new ResponseDto(ResponseCode.CERTIFICATION_FAIL,ResponseMessage.CERTIFICATION_FAIL);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+    }
+
 
 }

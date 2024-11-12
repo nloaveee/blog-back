@@ -13,6 +13,9 @@ public class SignUpRequestDto {
     @NotBlank @Email
     private String email;
 
+    @NotBlank
+    private String id;
+
     @NotBlank @Size(min = 8, max = 20)
     private String password;
 
@@ -29,4 +32,7 @@ public class SignUpRequestDto {
 
     @NotNull @AssertTrue
     private Boolean agreedPersonal;
+
+    @NotBlank
+    private String certificationNumber;
 }

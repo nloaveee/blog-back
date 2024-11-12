@@ -34,21 +34,19 @@ public class UserEntity {
 
     private boolean agreedPersonal;
 
-    private String type;
-
     private String role;
+
+    private String type;
 
     public UserEntity(SignUpRequestDto dto) {
         this.email = dto.getEmail();
-        this.userId = dto.getUserId();
+        this.userId = dto.getId();
         this.password = dto.getPassword();
         this.nickname = dto.getNickname();
         this.telNumber = dto.getTelNumber();
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();
         this.agreedPersonal = dto.getAgreedPersonal();
-        this.type = dto.getType();
-        this.role = dto.getRole();
     }
 
     public void setNickname(String nickname) {
