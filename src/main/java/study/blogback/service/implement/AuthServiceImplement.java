@@ -111,7 +111,6 @@ public class AuthServiceImplement implements AuthService {
         return CheckCertificationResponseDto.success();
     }
 
-
     /**
      * 회원가입
      */
@@ -137,11 +136,17 @@ public class AuthServiceImplement implements AuthService {
                 return SignUpResponseDto.duplicateNickname();
             }
 
-
             String telNumber = dto.getTelNumber();
             boolean existedByTelNumber = userRepository.existsByTelNumber(telNumber);
             if (existedByTelNumber) {
                 return SignUpResponseDto.duplicateTelNumber();
+            }
+
+            String certificationNumber = dto.getCertificationNumber();
+            CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
+            boolean isMatched = certificationEntity.getEmail().equals(email) && certificationEntity.getCertificationNumber().equals(certificationNumber);
+            if (!isMatched) {
+                return SignUpResponseDto.certificationFail();
             }
 
             String password = dto.getPassword();
@@ -151,6 +156,7 @@ public class AuthServiceImplement implements AuthService {
             UserEntity userEntity = new UserEntity(dto);
             userRepository.save(userEntity);
 
+            certificationRepository.deleteByUserId(userId);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -160,7 +166,9 @@ public class AuthServiceImplement implements AuthService {
         return SignUpResponseDto.success();
     }
 
-
+    /**
+     * 로그인
+     */
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 

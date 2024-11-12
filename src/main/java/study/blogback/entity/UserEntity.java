@@ -47,6 +47,8 @@ public class UserEntity {
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();
         this.agreedPersonal = dto.getAgreedPersonal();
+        this.type="app";
+        this.role="ROLE_USER";
     }
 
     public void setNickname(String nickname) {
