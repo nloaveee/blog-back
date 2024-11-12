@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.blogback.dto.request.auth.SignUpRequestDto;
-import study.blogback.dto.response.auth.SignUpResponseDto;
 
 @Getter
 @NoArgsConstructor
