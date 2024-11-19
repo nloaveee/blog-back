@@ -10,9 +10,9 @@ import study.blogback.dto.response.ResponseDto;
 @Getter
 public class SignInResponseDto extends ResponseDto {
 
-    private String token;
+    private final String token;
 
-    private int expirationTime;
+    private final int expirationTime;
 
     private SignInResponseDto(String token) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);

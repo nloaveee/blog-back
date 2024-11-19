@@ -36,7 +36,7 @@ public class AuthServiceImplement implements AuthService {
         try {
 
             String userId =dto.getId();
-            boolean isExistId = userRepository.existsById(userId);
+            boolean isExistId = userRepository.existsByUserId(userId);
             if (isExistId) {
                 return IdCheckResponseDto.duplicateId();
             }
@@ -175,8 +175,8 @@ public class AuthServiceImplement implements AuthService {
         String token = null;
 
         try {
-            String email = dto.getEmail();
-            UserEntity userEntity = userRepository.findByEmail(email);
+            String userId = dto.getId();
+            UserEntity userEntity = userRepository.findByUserId(userId);
             if (userEntity == null) {
                 return SignInResponseDto.signInFail();
             }
@@ -188,7 +188,7 @@ public class AuthServiceImplement implements AuthService {
                 return SignInResponseDto.signInFail();
             }
 
-            token = jwtProvider.create(email);
+            token = jwtProvider.create(userId);
 
 
         } catch (Exception exception){
