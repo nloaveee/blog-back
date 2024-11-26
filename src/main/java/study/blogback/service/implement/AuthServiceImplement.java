@@ -118,7 +118,7 @@ public class AuthServiceImplement implements AuthService {
     public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
         try {
-            String userId = dto.getId();
+            String userId = dto.getUserId();
             boolean existedById = userRepository.existsByUserId(userId);
             if (existedById) {
                 return IdCheckResponseDto.duplicateId();

@@ -21,13 +21,13 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<? super GetUserResponseDto> getUser(String email) {
+    public ResponseEntity<? super GetUserResponseDto> getUser(String id) {
 
         UserEntity userEntity = null;
 
         try {
 
-            userEntity = userRepository.findByEmail(email);
+            userEntity = userRepository.findByUserId(id);
             if (userEntity == null) {
                 return GetUserResponseDto.noExistUser();
             }
@@ -41,12 +41,12 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(String email) {
+    public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(String id) {
 
         UserEntity userEntity = null;
 
         try {
-            userEntity = userRepository.findByEmail(email);
+            userEntity = userRepository.findByUserId(id);
             if (userEntity == null) {
                return GetSignInUserResponseDto.notExistUser();
             }

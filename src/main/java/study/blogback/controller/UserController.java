@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import study.blogback.dto.request.user.PatchNicknameRequestDto;
 import study.blogback.dto.request.user.PatchProfileImageRequestDto;
@@ -21,17 +20,17 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{email}")
+    @GetMapping("/{id}")
     public ResponseEntity<? super GetUserResponseDto> getUser
-            (@PathVariable("email") String email) {
-        ResponseEntity<? super GetUserResponseDto> response = userService.getUser(email);
+            (@PathVariable("id") String id) {
+        ResponseEntity<? super GetUserResponseDto> response = userService.getUser(id);
         return response;
     }
 
     @GetMapping("")
     public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser
-            (@AuthenticationPrincipal String email) {
-        ResponseEntity<? super GetSignInUserResponseDto> response = userService.getSignInUser(email);
+            (@AuthenticationPrincipal String id) {
+        ResponseEntity<? super GetSignInUserResponseDto> response = userService.getSignInUser(id);
         return response;
     }
 

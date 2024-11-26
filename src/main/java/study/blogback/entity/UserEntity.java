@@ -40,7 +40,7 @@ public class UserEntity {
 
     public UserEntity(SignUpRequestDto dto) {
         this.email = dto.getEmail();
-        this.userId = dto.getId();
+        this.userId = dto.getUserId();
         this.password = dto.getPassword();
         this.nickname = dto.getNickname();
         this.telNumber = dto.getTelNumber();
@@ -49,6 +49,15 @@ public class UserEntity {
         this.agreedPersonal = dto.getAgreedPersonal();
         this.type="app";
         this.role="ROLE_USER";
+    }
+
+    public UserEntity(String userId,String email, String type) {
+        this.userId = userId;
+        this.password = "passw0rd";
+        this.email = email;
+        this.type=type;
+        this.role="ROLE_USER";
+
     }
 
     public void setNickname(String nickname) {

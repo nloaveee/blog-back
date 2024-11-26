@@ -13,12 +13,14 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import study.blogback.exception.OAuth2SuccessHandler;
 import study.blogback.filter.JwtAuthenticationFilter;
 
 import java.io.IOException;
@@ -27,6 +29,13 @@ import java.io.IOException;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private final DefaultOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandler successHandler;
+
+    public WebSecurityConfig(DefaultOAuth2UserService oAuth2UserService, OAuth2SuccessHandler successHandler) {
+        this.oAuth2UserService = oAuth2UserService;
+        this.successHandler = successHandler;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -58,11 +67,19 @@ public class WebSecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/api/v1/auth/**", "/api/v1/search/**","/file/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/board/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/user/**").hasRole("USER")
+                        .requestMatchers("/", "/favicon.ico", "/api/v1/auth/**", "/api/v1/search/**", "/file/**", "/oauth2/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/board/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
+
+        http
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+                        .successHandler(successHandler));
+
 
         http
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

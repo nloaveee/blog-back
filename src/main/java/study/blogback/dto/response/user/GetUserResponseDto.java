@@ -11,13 +11,13 @@ import study.blogback.entity.UserEntity;
 @Getter
 public class GetUserResponseDto extends ResponseDto {
 
-    private String email;
+    private String id;
     private String nickname;
     private String profilImgae;
 
     public GetUserResponseDto(UserEntity userEntity) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.email = userEntity.getEmail();
+        this.id = userEntity.getUserId();
         this.nickname = userEntity.getNickname();
         this.profilImgae = userEntity.getProfileImage();
     }
